@@ -44,7 +44,7 @@ class Node:
 
     def __pow__(self, power):
         assert isinstance(power, (int, float)), "power needs to be int or float"
-        res = Node(self.data ** power, (self, power), f'**{power}')
+        res = Node(self.data ** power, (self,), f'**{power}')
 
         def _backward():
             self.grad += power * (self.data ** (power - 1)) * res.grad
@@ -59,7 +59,7 @@ class Node:
             self.grad = (1 - (res.data ** 2)) * res.grad
 
         res._backward = _backward
-        pass
+        return res
 
     def __neg__(self):
         return self * -1
@@ -82,9 +82,33 @@ class Node:
     def __rtruediv__(self, other):
         return other * (self ** -1)
 
+    def backward(self):
+
+        # topological order all the children in the graph
+        topo = []
+        visited = set()
+
+        def build_topo(v):
+            if v not in visited:
+                visited.add(v)
+                for child in v._prev:
+                    build_topo(child)
+                topo.append(v)
+
+        build_topo(self)
+
+        # go one variable at a time and apply the chain rule to get its gradient
+        self.grad = 1
+        for v in reversed(topo):
+            v._backward()
+
 
 if __name__ == '__main__':
     n1 = Node(2)
     n2 = Node(4)
-    n3 = n1 + n2
+    n3 = n1 * n2
+    n3.tanh()
+    n3.backward()
+    print(n3._prev)
     draw_dot(n3)
+    print("Done")
