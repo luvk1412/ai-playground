@@ -1,5 +1,11 @@
+import string
+
 import matplotlib.pyplot as plt
 import torch
+
+default_stoi = {ch: i + 1 for i, ch in enumerate(string.ascii_lowercase)}
+default_stoi['.'] = 0
+default_itos = {v: k for k, v in default_stoi.items()}
 
 
 def get_names_list():
@@ -23,7 +29,18 @@ def train_val_test_split(X, Y, train_percent, val_percent):
     return X[:train_len], Y[:train_len], X[train_len:val_len], Y[train_len:val_len], X[val_len:], Y[val_len:]
 
 
+def get_ngram_dataset(words, stoi=default_stoi, block_size=1):
+    xs, ys = [], []
+    for word in words:
+        context = [0] * block_size
+        for ch in word + '.':
+            xs.append(context[0] if block_size == 1 else context)
+            ys.append(stoi[ch])
+            context = context[1:] + [stoi[ch]]
+    return torch.tensor(xs), torch.tensor(ys)
+
+
 if __name__ == '__main__':
     names = get_names_list()
-    print(names)
+    print(get_bigrams_dataset(words=names)[1].shape)
     pass
