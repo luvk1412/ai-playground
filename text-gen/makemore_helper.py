@@ -42,5 +42,5 @@ def get_ngram_dataset(words, stoi=default_stoi, block_size=1):
 
 if __name__ == '__main__':
     names = get_names_list()
-    print(get_bigrams_dataset(words=names)[1].shape)
+    print(get_ngram_dataset(words=names))
     pass
