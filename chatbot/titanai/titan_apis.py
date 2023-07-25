@@ -5,7 +5,6 @@ import os
 import random
 
 
-# Set the headers for all requests
 load_dotenv()
 env = os.getenv('ENV')
 st = os.getenv('ST')
