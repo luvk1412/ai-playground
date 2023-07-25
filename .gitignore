@@ -1,3 +1,7 @@
 .idea
 .DS_STORE
+.env
 models
+*.pkl
+db_persist
+__pycache__
