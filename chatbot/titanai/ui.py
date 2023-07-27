@@ -60,20 +60,14 @@ def talk_to_gpt3(prompt, conversation_history, role='user', function_name=None):
 def main():
     st.title('Titan AI Chat')
 
-    input = ''
-    if 'input' in st.session_state:
-        input = st.session_state['input']
-
     if 'chat' not in st.session_state:
         conversation_history = [
             {"role": "system", "content": "You are a helpful assistant which is being used in an email application, for example: gmail, your aim is to help user only with email related tasks and some other natural comverstaion if he wants"}]
     else:
         conversation_history = st.session_state['chat']
-    user_input = st.text_input("You: ", input)
+    user_input = st.text_input("You: ")
     if user_input:
         talk_to_gpt3(user_input, conversation_history)
-        input = ''
-        st.session_state['input'] = ''
 
     for msg in conversation_history:
         if msg["role"] == "user":

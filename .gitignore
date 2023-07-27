@@ -7,3 +7,4 @@ db_persist
 __pycache__
 .idea
 .vscode
+storage
