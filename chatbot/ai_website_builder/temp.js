@@ -1,4 +1,4 @@
-const openaiApiKey = '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';
+const openaiApiKey = '';
 
 async function generateText(prompt) {
     const endpoint = 'https://api.openai.com/v1/completions';
