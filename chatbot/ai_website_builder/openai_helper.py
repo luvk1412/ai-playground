@@ -1,5 +1,5 @@
 from openai import OpenAI
-from constants import website_json_format
+from constants import *
 from data_class import UserWebsiteInput
 import json
 
@@ -59,15 +59,47 @@ landing page value for given bussiness. Landing page value can be only one of th
         landing_page = get_json_resp(call_openai(conversation_history=get_new_conversation(system_prompt=system_prompt, user_prompt=user_prompt), model=model, output_json=True))['landing_page']
     else:
         landing_page = user_input.landing_page
-
-    
-    website_data = get_json_resp(call_openai(conversation_history=get_new_conversation(system_prompt=system_prompt, user_prompt=user_input), model=model, output_json=True))
+    website_data = get_json_resp(call_openai(conversation_history=get_new_conversation(system_prompt=system_prompt, user_prompt=website_gen_user_prompt), model=model, output_json=True))
     return landing_page, website_data
 
-def get_next_chat_message(user_message, current_messages=None):
-    ai_message = 'Hey'
-    website_json = None
-    return ai_message, website_json
-    
+def get_next_chat_message(user_message, current_messages, website_data, model):
+    new_website_data = None
 
-    
+    is_new_conversation = current_messages is None
+    if is_new_conversation:
+        system_prompt = f"You are a helpful assistant which is being used in a site builder app, you help user in building a beautiful and informational site for their business, \
+give them suggestions to improve certain section's content if asked(one section at a time). Based on this json format: {website_json_format} , \
+this is the current website: {website_data}, user can ask you to remove certain sections, add certain sections or modify certains sections in json. \
+The changes you can make or only limited to what can be added/removed/modified in json, If user askes to add any new ui component or something like that, \
+you should refuse to user in simple language and not mention things like json etc as real user is unaware of that. Your replies should be concise. You should also not call any function in such cases as well"
+        current_messages = get_new_conversation(system_prompt=system_prompt, user_prompt=user_message)
+    else:
+        current_messages = add_user_message(message=user_message, conversation=current_messages)
+    response = call_openai(conversation_history=current_messages, functions=functions, model=model)
+
+    if response.choices[0].finish_reason == 'tool_calls':
+        current_messages.append(response.choices[0].message)
+        tool_call = response.choices[0].message.tool_calls[0]
+        argument = json.loads(response.choices[0].message.tool_calls[0].function.arguments)['changes_to_make']
+
+        system_prompt=f"You are a helpful assistant which is being used in a site builder app, you help user in building a beautiful and informational site for their business, \
+give them suggestions to improve it and then call appropriate functions to make changes to the website. Based on this json format: {website_json_format} , \
+this is the current website: {website_data}, user can ask you to remove certain sections, add certain sections or modify certains sections, and you perform \
+those action in accordance with original json fomrat given."
+        user_prompt=f"{argument}. Output the modified website json"
+
+        modify_conversation_agent = get_new_conversation(system_prompt=system_prompt, user_prompt=user_prompt)
+        new_website_data = get_json_resp(call_openai(conversation_history=modify_conversation_agent, output_json=True, model=model))
+        current_messages.append(
+            {
+                "tool_call_id": tool_call.id,
+                "role": "tool",
+                "name": tool_call.function.name,
+                "content": f"The website has been modified to {new_website_data}"
+            }
+        )
+        response = call_openai(conversation_history=current_messages, functions=functions, model=model)
+        current_messages = add_assistant_message(message=get_message_content(response), conversation=current_messages)
+    else:
+        current_messages = add_assistant_message(message=get_message_content(response), conversation=current_messages)
+    return current_messages, new_website_data

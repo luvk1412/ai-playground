@@ -81,3 +81,21 @@ website_json_format = {
         ]
     }
 }
+
+
+functions = [
+    {
+        "name": "change_website",
+        "description": "This function should be called when user explicitly asks to change the website content. This should not be called when asked for suggestions or for ui changes as this can only change content",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "changes_to_made": {
+                    "type": "string",
+                    "description": "A prompt which describes what changes should be made to the website",
+                }
+            },
+            "required": ["changes_to_make"],
+        },
+    }
+]
