@@ -1,0 +1,83 @@
+{
+    "header": {
+        "title": "<This should be title of the web site>",
+        "image_search_prompt": "Text to use for stock image search of brand logo"
+    },
+    "intro": {
+        "heading": "heading for page",
+        "description": "2-3 line description ab out the basis",
+        "button_label": "Label text of button"
+    },
+    "custom_links": {
+        "links":[
+            {
+                "button_label": "Label for the button",
+                "button_icon" : "One of the 12 icons: (need to type all icons here)"
+            }
+        ]
+    },
+    "services_section": {
+        "heading": "",
+        "button_label": "Each service will have a button on ui and this label will be used for all services, For ex: Book this Service/Book",
+        "currency": "currency unit to use one of USD, EUR, GBP",
+        "services":[
+            {
+                "name": "name of the service",
+                "description": "service desc",
+                "price": "integer value of price in unit defined above",
+                "image_search_prompt": "Text to use for stock image search of Service being offered"
+            }
+         ]
+    },
+    "text": {
+        "heading": "",
+        "description": "",
+        "button_label": ""
+    },
+    "gallery_section": {
+        "heading": "",
+        "button_label": "",
+        "images": [
+            {
+                "image_description": "",
+                "image_search_prompt": "Text to use for stock image search of Image being show for given description"
+
+            }
+        ]
+    },
+    "product_section": {
+        "heading": "",
+        "main_button_label": "Label for main button show to right of Heading, For example: Shope all",
+        "button_label": "Each product will have a button on ui and this label will be used for all products, For ex: Buy/Buy Now",
+        "currency": "currency unit to use one of USD, EUR, GBP",
+        "products": [
+            {
+                "name": "",
+                "price": "integer value of price in unit defined above",
+                "image_search_prompt": "Text to use for stock image search of product being sold"
+            }
+        ]
+    },
+    "testimonial_section": {
+        "heading": "",
+        "testimonials": [
+            {
+                "quote": "",
+                "written_by": "21",
+                "designation": "",
+                "gender": "male or female"
+            }
+        ]
+    },
+    "contact_form": {
+        "heading": ""
+    },
+    "social_links": {
+        "links":[
+            {
+                "type": "facebook/linkedin/twitter/tiktok",
+                "link": ""
+            }
+        ]
+    }
+}
