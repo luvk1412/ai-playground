@@ -2,10 +2,13 @@ from openai import OpenAI
 from constants import *
 from data_class import UserWebsiteInput
 import json
+from dotenv import load_dotenv
+load_dotenv()
 
-client = OpenAI(api_key="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")
+client = OpenAI()
 gpt3_model = "gpt-3.5-turbo-0125"
 gpt4_model = "gpt-4-0125-preview"
+
 
 def call_openai(conversation_history, output_json=False, functions=None, model=gpt3_model, temperature=1):
     response_format = {"type": "text"}
